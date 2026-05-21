@@ -1,0 +1,58 @@
+name: Actualizar Catálogo SIGA
+
+# Cuándo se ejecuta
+on:
+  # Todos los días a las 16:00 UTC (11:00 Lima, después de que el MEF actualice)
+  schedule:
+    - cron: '0 16 * * *'
+  # También permite correrlo manualmente desde la pestaña "Actions" de GitHub
+  workflow_dispatch:
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Necesario para hacer commit de vuelta al repo
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Descargar CSV oficial del MEF
+        run: |
+          echo "Descargando catálogo SIGA del MEF..."
+          curl -L --fail -o catalogo.csv \
+            "https://fs.datosabiertos.mef.gob.pe/datastorefiles/Catalogo-SIGA_MEF.csv"
+          echo "Descargado: $(du -h catalogo.csv | cut -f1)"
+          echo "Líneas: $(wc -l < catalogo.csv)"
+
+      - name: Generar base de datos SQLite
+        run: python construir_db.py
+
+      - name: Comprimir base de datos
+        run: |
+          gzip -9 -c catalogo-siga.db > catalogo-siga.db.gz
+          echo "Tamaño final: $(du -h catalogo-siga.db.gz | cut -f1)"
+          # Borrar el .db sin comprimir (no se sube al repo)
+          rm catalogo-siga.db
+          # Borrar el CSV temporal
+          rm catalogo.csv
+
+      - name: Hacer commit si hay cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalogo-siga.db.gz
+          # Solo commit si realmente hubo cambios
+          if git diff --staged --quiet; then
+            echo "No hay cambios en el catálogo, nada que commitear."
+          else
+            FECHA=$(date +'%Y-%m-%d')
+            git commit -m "🔄 Actualización automática del catálogo SIGA - $FECHA"
+            git push
+            echo "✅ Base de datos actualizada y subida"
+          fi
