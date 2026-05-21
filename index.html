@@ -440,6 +440,12 @@ async function init() {
     const count = db.exec("SELECT COUNT(*) FROM items")[0].values[0][0];
     $('liveBadge').textContent = count.toLocaleString('es-PE') + ' ítems';
 
+    console.log(`✅ DB cargada: ${count.toLocaleString()} ítems`);
+
+    if (count === 0) {
+      throw new Error('La base de datos cargó pero está vacía');
+    }
+
     // 7. Listo: ocultar loader y habilitar búsqueda
     $('loader').classList.add('hidden');
     $('searchInput').disabled = false;
@@ -467,16 +473,9 @@ function formatCode(q) {
   return q;
 }
 
-function escapeFts(q) {
-  // FTS5 necesita términos seguros. Quitamos caracteres especiales y agregamos prefijo a la última palabra
-  const words = q.trim().split(/\s+/).filter(w => w.length > 0);
-  if (words.length === 0) return '';
-  // Cada palabra completa busca exacto; la última con * para que filtre mientras escribes
-  return words.map((w, i) => {
-    const safe = w.replace(/['"]/g, '');
-    if (safe.length < 2) return null;
-    return i === words.length - 1 ? `"${safe}"*` : `"${safe}"`;
-  }).filter(Boolean).join(' ');
+function normalizar(s) {
+  // Mismo proceso que hicimos en Python: quita tildes y pasa a minúsculas
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
 function search(query, filter) {
@@ -488,8 +487,8 @@ function search(query, filter) {
   let stmt, rows = [];
 
   try {
-    // Detectar tipo de búsqueda
     if (isCode(q)) {
+      // Búsqueda por código: usa el índice idx_codigo
       const code = formatCode(q);
       const sql = filter === 'all'
         ? "SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE codigo LIKE ? || '%' LIMIT 100"
@@ -497,20 +496,30 @@ function search(query, filter) {
       stmt = db.prepare(sql);
       filter === 'all' ? stmt.bind([code]) : stmt.bind([code, filter]);
     } else {
-      const ftsQuery = escapeFts(q);
-      if (!ftsQuery) return { rows: [], ms: 0 };
-      const sql = filter === 'all'
-        ? "SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE id IN (SELECT rowid FROM items_fts WHERE items_fts MATCH ?) LIMIT 100"
-        : "SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE id IN (SELECT rowid FROM items_fts WHERE items_fts MATCH ?) AND tipo = ? LIMIT 100";
+      // Búsqueda por texto: separar palabras, todas deben aparecer (AND)
+      const words = normalizar(q).split(/\s+/).filter(w => w.length >= 2);
+      if (words.length === 0) return { rows: [], ms: 0 };
+
+      // Construir cláusulas LIKE para cada palabra
+      const conditions = words.map(() => "busqueda LIKE ?").join(" AND ");
+      const params = words.map(w => `%${w}%`);
+
+      let sql = `SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE ${conditions}`;
+      if (filter !== 'all') {
+        sql += " AND tipo = ?";
+        params.push(filter);
+      }
+      sql += " LIMIT 100";
+
       stmt = db.prepare(sql);
-      filter === 'all' ? stmt.bind([ftsQuery]) : stmt.bind([ftsQuery, filter]);
+      stmt.bind(params);
     }
 
     while (stmt.step()) rows.push(stmt.getAsObject());
     stmt.free();
   } catch (e) {
-    console.warn('Search error:', e);
-    return { rows: [], ms: 0 };
+    console.error('Search error:', e);
+    return { rows: [], ms: 0, error: e.message };
   }
 
   return { rows, ms: performance.now() - t0 };
@@ -536,7 +545,14 @@ function render() {
     return;
   }
 
-  const { rows, ms } = search(currentQuery, currentFilter);
+  const result = search(currentQuery, currentFilter);
+  const { rows, ms, error } = result;
+
+  if (error) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">⚠</div><div>Error en la búsqueda:<br><code style="color:var(--red);font-size:12px">${error}</code></div></div>`;
+    $('perfDisplay').innerHTML = '';
+    return;
+  }
 
   $('perfDisplay').innerHTML = `${rows.length} resultados en <strong>${ms.toFixed(1)}ms</strong>`;
 
