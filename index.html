@@ -215,7 +215,9 @@
     background: transparent; border: 1px solid var(--border);
     color: var(--text-dim);
     width: 32px; height: 32px; border-radius: 6px;
-    cursor: pointer; font-size: 18px; transition: all 0.15s;
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0;
   }
   .detail-close:hover { color: var(--text); border-color: var(--text-dim); }
   .detail-code {
@@ -284,9 +286,49 @@
     .actions { width: 100%; margin-left: 0; }
     .detail-panel { width: 100%; }
   }
+
+  /* ICON SYSTEM */
+  .icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+  .icon-lg { width: 40px; height: 40px; stroke-width: 1.5; }
+  .icon-sm { width: 14px; height: 14px; }
+  .icon-search-input {
+    position: absolute; left: 18px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim); pointer-events: none;
+    width: 18px; height: 18px;
+  }
+  .empty-icon-svg {
+    color: var(--text-dim);
+    opacity: 0.4;
+    margin: 0 auto 12px;
+    display: block;
+  }
 </style>
 </head>
 <body>
+
+<!-- SVG ICON SPRITE (Lucide icons) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></symbol>
+    <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></symbol>
+    <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path></symbol>
+  </defs>
+</svg>
 
 <div class="loader" id="loader">
   <h2>Cargando catálogo SIGA</h2>
@@ -305,7 +347,7 @@
   </header>
 
   <div class="search-bar">
-    <span class="search-icon">⌕</span>
+    <svg class="icon icon-search-input"><use href="#i-search"/></svg>
     <input type="text" class="search-input" id="searchInput"
       placeholder="Busca por nombre o código (14.06.0053.0230 o sin puntos)..." autofocus disabled>
     <span class="keyboard-hint">Ctrl + K</span>
@@ -319,8 +361,14 @@
 
     <div class="actions">
       <span class="perf" id="perfDisplay"></span>
-      <button class="btn-export" id="btnExportCsv" disabled title="Exportar resultados a CSV">📄 CSV</button>
-      <button class="btn-export primary" id="btnExportXlsx" disabled title="Exportar resultados a Excel">📊 Excel</button>
+      <button class="btn-export" id="btnExportCsv" disabled title="Exportar resultados a CSV">
+        <svg class="icon"><use href="#i-file-text"/></svg>
+        CSV
+      </button>
+      <button class="btn-export primary" id="btnExportXlsx" disabled title="Exportar resultados a Excel">
+        <svg class="icon"><use href="#i-sheet"/></svg>
+        Excel
+      </button>
     </div>
   </div>
 
@@ -330,7 +378,7 @@
     </div>
     <div id="resultsList">
       <div class="welcome">
-        <div class="empty-icon">⌕</div>
+        <svg class="icon icon-lg empty-icon-svg"><use href="#i-search"/></svg>
         <div>Escribe algo arriba para empezar a buscar</div>
       </div>
     </div>
@@ -338,14 +386,17 @@
   </div>
 
   <div class="footer-note">
-    <strong>💡 Datos oficiales en vivo.</strong> Los 645,150 ítems del Catálogo SIGA MEF se actualizan diariamente desde el Portal de Datos Abiertos. La búsqueda funciona 100% en tu navegador. Click en una fila para ver el detalle completo, o en el código para copiarlo.
+    <svg class="icon" style="display:inline;vertical-align:middle;margin-right:6px;color:var(--accent)"><use href="#i-info"/></svg>
+    <strong>Datos oficiales en vivo.</strong> Los 645,150 ítems del Catálogo SIGA MEF se actualizan diariamente desde el Portal de Datos Abiertos. La búsqueda funciona 100% en tu navegador. Click en una fila para ver el detalle completo, o en el código para copiarlo.
   </div>
 </div>
 
 <div class="detail-overlay" id="detailOverlay"></div>
 <aside class="detail-panel" id="detailPanel">
   <div class="detail-header">
-    <button class="detail-close" id="detailClose">×</button>
+    <button class="detail-close" id="detailClose" title="Cerrar">
+      <svg class="icon"><use href="#i-x"/></svg>
+    </button>
     <div class="detail-code" id="detailCode" title="Click para copiar">—</div>
     <div class="detail-title" id="detailTitle">—</div>
     <div class="detail-tags" id="detailTags"></div>
@@ -415,7 +466,7 @@ async function init() {
 
     const count = db.exec("SELECT COUNT(*) FROM items")[0].values[0][0];
     $('liveBadge').textContent = count.toLocaleString('es-PE') + ' ítems';
-    console.log(`✅ DB cargada: ${count.toLocaleString()} ítems`);
+    console.log(`[Buscador SIGA] DB cargada: ${count.toLocaleString()} ítems`);
 
     if (count === 0) throw new Error('Base de datos vacía');
 
@@ -423,7 +474,7 @@ async function init() {
     $('searchInput').disabled = false;
     $('searchInput').focus();
   } catch (err) {
-    $('progressText').innerHTML = `❌ Error: ${err.message}`;
+    $('progressText').innerHTML = `Error: ${err.message}`;
     console.error(err);
   }
 }
@@ -541,7 +592,7 @@ function render() {
   $('loadMoreContainer').innerHTML = '';
 
   if (!currentQuery.trim()) {
-    list.innerHTML = `<div class="welcome"><div class="empty-icon">⌕</div><div>Escribe algo arriba para empezar a buscar</div></div>`;
+    list.innerHTML = `<div class="welcome"><svg class="icon icon-lg empty-icon-svg"><use href="#i-search"/></svg><div>Escribe algo arriba para empezar a buscar</div></div>`;
     $('perfDisplay').innerHTML = '';
     $('btnExportCsv').disabled = true;
     $('btnExportXlsx').disabled = true;
@@ -554,7 +605,7 @@ function render() {
   const totalMs = performance.now() - t0;
 
   if (result.error) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">⚠</div><div>Error: <code style="color:var(--red)">${result.error}</code></div></div>`;
+    list.innerHTML = `<div class="empty"><svg class="icon icon-lg empty-icon-svg" style="color:var(--red);opacity:0.7"><use href="#i-alert"/></svg><div>Error: <code style="color:var(--red)">${result.error}</code></div></div>`;
     $('perfDisplay').innerHTML = '';
     return;
   }
@@ -567,7 +618,7 @@ function render() {
   $('btnExportXlsx').disabled = totalMatches === 0;
 
   if (currentResults.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">○</div><div>Sin resultados para "<strong>${escapeHtml(currentQuery)}</strong>"</div></div>`;
+    list.innerHTML = `<div class="empty"><svg class="icon icon-lg empty-icon-svg"><use href="#i-empty"/></svg><div>Sin resultados para "<strong>${escapeHtml(currentQuery)}</strong>"</div></div>`;
     return;
   }
 
@@ -662,8 +713,14 @@ function showDetail(codigo) {
     <div class="detail-field">
       <div class="detail-label">Acciones</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn-export" id="detailCopyCode">📋 Copiar código</button>
-        <button class="btn-export" id="detailCopyName">📋 Copiar nombre</button>
+        <button class="btn-export" id="detailCopyCode">
+          <svg class="icon"><use href="#i-copy"/></svg>
+          Copiar código
+        </button>
+        <button class="btn-export" id="detailCopyName">
+          <svg class="icon"><use href="#i-copy"/></svg>
+          Copiar nombre
+        </button>
       </div>
     </div>
   `;

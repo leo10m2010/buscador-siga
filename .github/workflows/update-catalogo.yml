@@ -1,11 +1,11 @@
-name: Actualizar Catálogo SIGA
+name: Actualizar Catalogo SIGA
 
-# Cuándo se ejecuta
+# Cuando se ejecuta
 on:
-  # Todos los días a las 16:00 UTC (11:00 Lima, después de que el MEF actualice)
+  # Todos los dias a las 16:00 UTC (11:00 Lima, despues de que el MEF actualice)
   schedule:
     - cron: '0 16 * * *'
-  # También permite correrlo manualmente desde la pestaña "Actions" de GitHub
+  # Tambien permite correrlo manualmente desde la pestana "Actions" de GitHub
   workflow_dispatch:
 
 jobs:
@@ -24,11 +24,11 @@ jobs:
 
       - name: Descargar CSV oficial del MEF
         run: |
-          echo "Descargando catálogo SIGA del MEF..."
+          echo "Descargando catalogo SIGA del MEF..."
           curl -L --fail -o catalogo.csv \
             "https://fs.datosabiertos.mef.gob.pe/datastorefiles/Catalogo-SIGA_MEF.csv"
           echo "Descargado: $(du -h catalogo.csv | cut -f1)"
-          echo "Líneas: $(wc -l < catalogo.csv)"
+          echo "Lineas: $(wc -l < catalogo.csv)"
 
       - name: Generar base de datos SQLite
         run: python construir_db.py
@@ -36,10 +36,8 @@ jobs:
       - name: Comprimir base de datos
         run: |
           gzip -9 -c catalogo-siga.db > catalogo-siga.db.gz
-          echo "Tamaño final: $(du -h catalogo-siga.db.gz | cut -f1)"
-          # Borrar el .db sin comprimir (no se sube al repo)
+          echo "Tamano final: $(du -h catalogo-siga.db.gz | cut -f1)"
           rm catalogo-siga.db
-          # Borrar el CSV temporal
           rm catalogo.csv
 
       - name: Hacer commit si hay cambios
@@ -47,12 +45,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add catalogo-siga.db.gz
-          # Solo commit si realmente hubo cambios
           if git diff --staged --quiet; then
-            echo "No hay cambios en el catálogo, nada que commitear."
+            echo "No hay cambios en el catalogo, nada que commitear."
           else
             FECHA=$(date +'%Y-%m-%d')
-            git commit -m "🔄 Actualización automática del catálogo SIGA - $FECHA"
+            git commit -m "Actualizacion automatica del catalogo SIGA - $FECHA"
             git push
-            echo "✅ Base de datos actualizada y subida"
+            echo "Base de datos actualizada y subida"
           fi

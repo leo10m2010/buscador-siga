@@ -2,9 +2,9 @@
 Construye catalogo-siga.db a partir de catalogo.csv (descargado del MEF).
 
 Genera la BD con:
-- Tabla principal con todos los ítems
-- Columna 'busqueda' normalizada (sin tildes, minúsculas) para LIKE rápido
-- Índices en código, tipo y búsqueda
+- Tabla principal con todos los items
+- Columna 'busqueda' normalizada (sin tildes, minusculas) para LIKE rapido
+- Indices en codigo, tipo y busqueda
 """
 
 import csv
@@ -15,7 +15,7 @@ import sys
 
 
 def normalizar(s: str) -> str:
-    """Quita tildes y pasa a minúsculas."""
+    """Quita tildes y pasa a minusculas."""
     if not s:
         return ""
     s = unicodedata.normalize("NFD", s)
@@ -28,19 +28,18 @@ def construir():
     db_path = "catalogo-siga.db"
 
     if not os.path.exists(csv_path):
-        print(f"❌ No se encuentra {csv_path}", file=sys.stderr)
+        print(f"[ERROR] No se encuentra {csv_path}", file=sys.stderr)
         sys.exit(1)
 
-    # Borrar DB previa si existe
     if os.path.exists(db_path):
         os.remove(db_path)
 
-    print(f"📂 Leyendo {csv_path}...")
+    print(f"[1/4] Leyendo {csv_path}...")
     with open(csv_path, "r", encoding="utf-8-sig") as f:
         rows = list(csv.DictReader(f))
-    print(f"   {len(rows):,} filas leídas")
+    print(f"      {len(rows):,} filas leidas")
 
-    print("🔨 Construyendo base de datos SQLite...")
+    print("[2/4] Construyendo base de datos SQLite...")
     conn = sqlite3.connect(db_path)
     conn.execute("""
         CREATE TABLE items (
@@ -78,18 +77,18 @@ def construir():
         data,
     )
 
-    print("📇 Creando índices...")
+    print("[3/4] Creando indices...")
     conn.execute("CREATE INDEX idx_codigo ON items(codigo)")
     conn.execute("CREATE INDEX idx_tipo ON items(tipo)")
     conn.execute("CREATE INDEX idx_busqueda ON items(busqueda COLLATE NOCASE)")
 
     conn.commit()
-    print("🗜️  Optimizando base de datos (VACUUM)...")
+    print("[4/4] Optimizando base de datos (VACUUM)...")
     conn.execute("VACUUM")
     conn.close()
 
     size_mb = os.path.getsize(db_path) / 1024 / 1024
-    print(f"✅ {db_path} generado ({size_mb:.1f} MB)")
+    print(f"[OK] {db_path} generado ({size_mb:.1f} MB)")
 
 
 if __name__ == "__main__":
