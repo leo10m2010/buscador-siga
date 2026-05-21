@@ -33,209 +33,134 @@
   }
   .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
 
-  /* LOADING SCREEN */
+  /* LOADING */
   .loader {
-    position: fixed; inset: 0;
-    background: var(--bg);
+    position: fixed; inset: 0; background: var(--bg);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    z-index: 1000;
-    transition: opacity 0.4s;
+    z-index: 1000; transition: opacity 0.4s;
   }
   .loader.hidden { opacity: 0; pointer-events: none; }
-  .loader h2 {
-    font-size: 28px; font-weight: 800;
-    margin-bottom: 8px; letter-spacing: -0.02em;
-  }
-  .loader p {
-    color: var(--text-dim);
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
-  .progress-bar {
-    width: 300px; height: 6px;
-    background: var(--surface-2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--accent);
-    width: 0%;
-    transition: width 0.2s;
-  }
-  .progress-text {
-    margin-top: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
+  .loader h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .loader p { color: var(--text-dim); font-size: 14px; margin-bottom: 24px; }
+  .progress-bar { width: 300px; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.2s; }
+  .progress-text { margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); }
 
   /* HEADER */
   header {
     border-bottom: 1px solid var(--border);
-    padding-bottom: 20px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
+    padding-bottom: 20px; margin-bottom: 24px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
   }
   .brand { display: flex; align-items: baseline; gap: 12px; }
   h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
   .badge {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; font-weight: 500;
-    padding: 3px 8px;
-    background: var(--green);
-    color: #000;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    padding: 3px 8px; background: var(--green); color: #000;
+    border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em;
   }
-  .stats {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
+  .stats { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); }
   .stats strong { color: var(--accent); font-weight: 700; }
 
   /* SEARCH */
   .search-bar { position: relative; margin-bottom: 16px; }
   .search-input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); color: var(--text);
     padding: 16px 110px 16px 52px;
-    font-size: 16px;
-    font-family: inherit;
-    border-radius: 8px;
-    outline: none;
+    font-size: 16px; font-family: inherit;
+    border-radius: 8px; outline: none;
     transition: border-color 0.15s, background 0.15s;
   }
-  .search-input:focus {
-    border-color: var(--accent);
-    background: var(--surface-2);
-  }
+  .search-input:focus { border-color: var(--accent); background: var(--surface-2); }
   .search-icon {
-    position: absolute;
-    left: 18px; top: 50%;
+    position: absolute; left: 18px; top: 50%;
     transform: translateY(-50%);
-    color: var(--text-dim);
-    font-size: 18px;
-    pointer-events: none;
+    color: var(--text-dim); font-size: 18px; pointer-events: none;
   }
   .keyboard-hint {
-    position: absolute;
-    right: 16px; top: 50%;
+    position: absolute; right: 16px; top: 50%;
     transform: translateY(-50%);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    background: var(--surface-2);
-    padding: 3px 8px;
-    border-radius: 3px;
-    border: 1px solid var(--border);
+    font-size: 11px; color: var(--text-dim);
+    background: var(--surface-2); padding: 3px 8px;
+    border-radius: 3px; border: 1px solid var(--border);
   }
 
-  .filters {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
+  /* TOOLBAR */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
   .filter-chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    padding: 6px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.15s;
-    font-family: inherit;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-dim); padding: 6px 14px;
+    border-radius: 999px; cursor: pointer;
+    font-size: 13px; font-weight: 500;
+    transition: all 0.15s; font-family: inherit;
   }
   .filter-chip:hover { color: var(--text); border-color: var(--text-dim); }
-  .filter-chip.active {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
-  }
-  .perf {
-    margin-left: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-  }
+  .filter-chip.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  .actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .perf { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); margin-right: 8px; }
   .perf strong { color: var(--green); }
+
+  .btn-export {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); padding: 6px 14px;
+    border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 500; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .btn-export:hover:not(:disabled) {
+    background: var(--accent-2); color: #000; border-color: var(--accent-2);
+  }
+  .btn-export:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-export.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+  .btn-export.primary:hover:not(:disabled) { background: #ffc107; }
 
   /* RESULTS */
   .results {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
   }
   .results-header {
-    display: grid;
-    grid-template-columns: 160px 1fr 80px 100px 110px;
-    gap: 16px;
-    padding: 12px 20px;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 160px 1fr 80px 100px 110px;
+    gap: 16px; padding: 12px 20px;
+    background: var(--surface-2); border-bottom: 1px solid var(--border);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    letter-spacing: 0.05em;
-    font-weight: 700;
+    font-size: 11px; text-transform: uppercase;
+    color: var(--text-dim); letter-spacing: 0.05em; font-weight: 700;
   }
   .result-row {
-    display: grid;
-    grid-template-columns: 160px 1fr 80px 100px 110px;
-    gap: 16px;
-    padding: 14px 20px;
+    display: grid; grid-template-columns: 160px 1fr 80px 100px 110px;
+    gap: 16px; padding: 14px 20px;
     border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.1s;
+    cursor: pointer; transition: background 0.1s;
     align-items: center;
   }
   .result-row:hover { background: var(--surface-2); }
   .result-row:last-child { border-bottom: none; }
 
-  .code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    font-weight: 500;
+  .code-btn {
+    background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--accent); font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 500;
   }
-  .code:hover { text-decoration: underline; }
+  .code-btn:hover { text-decoration: underline; }
   .name { font-size: 14px; line-height: 1.4; }
-  .name mark {
-    background: rgba(255, 212, 59, 0.25);
-    color: var(--accent);
-    padding: 0 2px;
-    border-radius: 2px;
-  }
+  .name mark { background: rgba(255, 212, 59, 0.25); color: var(--accent); padding: 0 2px; border-radius: 2px; }
   .family {
-    display: block;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 3px;
+    display: block; font-size: 11px;
+    color: var(--text-dim); margin-top: 3px;
     font-family: 'JetBrains Mono', monospace;
   }
   .type-tag {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 3px;
-    letter-spacing: 0.05em;
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 3px; letter-spacing: 0.05em;
   }
   .type-B { background: rgba(77, 171, 247, 0.15); color: var(--accent-2); }
   .type-S { background: rgba(81, 207, 102, 0.15); color: var(--green); }
@@ -243,114 +168,165 @@
   .unit { font-size: 13px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
   .date { font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
 
-  .empty, .welcome {
-    padding: 60px 20px;
-    text-align: center;
-    color: var(--text-dim);
-  }
+  .empty, .welcome { padding: 60px 20px; text-align: center; color: var(--text-dim); }
   .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
 
-  .footer-note {
-    margin-top: 24px;
-    padding: 16px;
-    background: var(--surface);
-    border-left: 3px solid var(--accent);
-    border-radius: 4px;
-    font-size: 13px;
+  /* LOAD MORE */
+  .load-more {
+    padding: 16px; text-align: center;
+    background: var(--surface-2); border-top: 1px solid var(--border);
+  }
+  .load-more button {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); padding: 8px 24px;
+    border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-family: inherit; transition: all 0.15s;
+  }
+  .load-more button:hover { background: var(--surface); border-color: var(--accent); }
+  .load-more .info {
+    margin-top: 8px; font-size: 11px;
+    color: var(--text-dim); font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* DETAIL PANEL */
+  .detail-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 50; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .detail-overlay.show { opacity: 1; pointer-events: auto; }
+  .detail-panel {
+    position: fixed; right: 0; top: 0; bottom: 0;
+    width: 480px; max-width: 90vw;
+    background: var(--surface); border-left: 1px solid var(--border);
+    z-index: 51; transform: translateX(100%);
+    transition: transform 0.25s ease-out;
+    overflow-y: auto;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+  }
+  .detail-panel.show { transform: translateX(0); }
+  .detail-header {
+    padding: 24px; border-bottom: 1px solid var(--border);
+    background: var(--surface-2); position: sticky; top: 0; z-index: 1;
+  }
+  .detail-close {
+    position: absolute; top: 16px; right: 16px;
+    background: transparent; border: 1px solid var(--border);
     color: var(--text-dim);
-    line-height: 1.6;
+    width: 32px; height: 32px; border-radius: 6px;
+    cursor: pointer; font-size: 18px; transition: all 0.15s;
+  }
+  .detail-close:hover { color: var(--text); border-color: var(--text-dim); }
+  .detail-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; color: var(--accent);
+    font-weight: 700; margin-bottom: 8px; cursor: pointer;
+  }
+  .detail-code:hover { text-decoration: underline; }
+  .detail-title { font-size: 18px; font-weight: 700; line-height: 1.3; margin-bottom: 12px; }
+  .detail-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .detail-body { padding: 24px; }
+  .detail-field { margin-bottom: 20px; }
+  .detail-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase;
+    color: var(--text-dim); letter-spacing: 0.08em;
+    margin-bottom: 4px; font-weight: 700;
+  }
+  .detail-value { font-size: 14px; line-height: 1.5; }
+  .detail-value.mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--accent);
+  }
+  .detail-hierarchy {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  }
+  .hierarchy-item {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; border-bottom: 1px dashed var(--border);
+  }
+  .hierarchy-item:last-child { border-bottom: none; }
+  .hierarchy-item .code-part { color: var(--accent); font-weight: 700; }
+  .hierarchy-item .name-part { color: var(--text-dim); margin-left: 16px; text-align: right; }
+
+  .footer-note {
+    margin-top: 24px; padding: 16px;
+    background: var(--surface); border-left: 3px solid var(--accent);
+    border-radius: 4px; font-size: 13px;
+    color: var(--text-dim); line-height: 1.6;
   }
   .footer-note strong { color: var(--text); }
   .footer-note code {
-    background: var(--surface-2);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
+    background: var(--surface-2); padding: 2px 6px;
+    border-radius: 3px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent);
   }
 
-  /* Toast para copiar código */
   .toast {
-    position: fixed;
-    bottom: 24px; left: 50%;
+    position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: var(--green);
-    color: #000;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 14px;
-    transition: transform 0.3s;
-    z-index: 100;
+    background: var(--green); color: #000;
+    padding: 10px 20px; border-radius: 6px;
+    font-weight: 600; font-size: 14px;
+    transition: transform 0.3s; z-index: 100;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 768px) {
     .container { padding: 16px; }
     .results-header { display: none; }
-    .result-row {
-      grid-template-columns: 1fr;
-      gap: 6px;
-      padding: 16px 20px;
-    }
-    .code::before { content: 'Código: '; color: var(--text-dim); font-size: 11px; }
+    .result-row { grid-template-columns: 1fr; gap: 6px; padding: 16px 20px; }
     .unit::before { content: 'Unidad: '; }
     .date::before { content: 'Creado: '; }
-    .perf { width: 100%; margin-left: 0; }
+    .actions { width: 100%; margin-left: 0; }
+    .detail-panel { width: 100%; }
   }
 </style>
 </head>
 <body>
 
-<!-- LOADER -->
 <div class="loader" id="loader">
   <h2>Cargando catálogo SIGA</h2>
-  <p>Descargando base de datos del MEF (primera vez son ~53 MB)</p>
+  <p>Descargando base de datos del MEF (primera vez son ~66 MB)</p>
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   <div class="progress-text" id="progressText">Iniciando...</div>
 </div>
 
-<!-- APP -->
 <div class="container">
   <header>
     <div class="brand">
       <h1>Buscador SIGA</h1>
       <span class="badge" id="liveBadge">645,150 ítems</span>
     </div>
-    <div class="stats">
-      Datos oficiales del <strong>MEF</strong> · Datos abiertos
-    </div>
+    <div class="stats">Datos oficiales del <strong>MEF</strong> · Datos abiertos</div>
   </header>
 
   <div class="search-bar">
     <span class="search-icon">⌕</span>
-    <input
-      type="text"
-      class="search-input"
-      id="searchInput"
-      placeholder="Busca por nombre o código (14.06.0053.0230 o sin puntos)..."
-      autofocus
-      disabled
-    >
+    <input type="text" class="search-input" id="searchInput"
+      placeholder="Busca por nombre o código (14.06.0053.0230 o sin puntos)..." autofocus disabled>
     <span class="keyboard-hint">Ctrl + K</span>
   </div>
 
-  <div class="filters">
+  <div class="toolbar">
     <button class="filter-chip active" data-filter="all">Todos</button>
     <button class="filter-chip" data-filter="B">Bienes</button>
     <button class="filter-chip" data-filter="S">Servicios</button>
     <button class="filter-chip" data-filter="O">Obras</button>
-    <div class="perf" id="perfDisplay"></div>
+
+    <div class="actions">
+      <span class="perf" id="perfDisplay"></span>
+      <button class="btn-export" id="btnExportCsv" disabled title="Exportar resultados a CSV">📄 CSV</button>
+      <button class="btn-export primary" id="btnExportXlsx" disabled title="Exportar resultados a Excel">📊 Excel</button>
+    </div>
   </div>
 
   <div class="results">
     <div class="results-header">
-      <div>Código</div>
-      <div>Nombre</div>
-      <div>Tipo</div>
-      <div>Unidad</div>
-      <div>Creado</div>
+      <div>Código</div><div>Nombre</div><div>Tipo</div><div>Unidad</div><div>Creado</div>
     </div>
     <div id="resultsList">
       <div class="welcome">
@@ -358,47 +334,51 @@
         <div>Escribe algo arriba para empezar a buscar</div>
       </div>
     </div>
+    <div id="loadMoreContainer"></div>
   </div>
 
   <div class="footer-note">
-    <strong>💡 Datos oficiales en vivo.</strong> El archivo <code>catalogo-siga.db</code> contiene los 645,150 ítems del Catálogo de Bienes, Servicios y Obras del SIGA MEF, descargado del Portal de Datos Abiertos del MEF. La búsqueda funciona 100% en tu navegador — no envío nada a ningún servidor. Click en un código para copiarlo.
+    <strong>💡 Datos oficiales en vivo.</strong> Los 645,150 ítems del Catálogo SIGA MEF se actualizan diariamente desde el Portal de Datos Abiertos. La búsqueda funciona 100% en tu navegador. Click en una fila para ver el detalle completo, o en el código para copiarlo.
   </div>
 </div>
 
-<div class="toast" id="toast">Código copiado</div>
+<div class="detail-overlay" id="detailOverlay"></div>
+<aside class="detail-panel" id="detailPanel">
+  <div class="detail-header">
+    <button class="detail-close" id="detailClose">×</button>
+    <div class="detail-code" id="detailCode" title="Click para copiar">—</div>
+    <div class="detail-title" id="detailTitle">—</div>
+    <div class="detail-tags" id="detailTags"></div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</aside>
 
-<!-- sql.js — SQLite compilado a WebAssembly -->
+<div class="toast" id="toast">Copiado</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// ============================================================
-// CONFIGURACIÓN
-// ============================================================
-// Cambia esta URL por donde subas tu archivo .db.gz
-// Opciones:
-//   - GitHub: 'https://tu-usuario.github.io/catalogo/catalogo-siga.db.gz'
-//   - Cloudflare Pages: 'https://catalogo.tu-dominio.pages.dev/catalogo-siga.db.gz'
-//   - Local mismo directorio: './catalogo-siga.db.gz'
 const DB_URL = './catalogo-siga.db.gz';
+const PAGE_SIZE = 100;
+const MAX_RESULTS = 5000;
 
 let db = null;
 let currentFilter = 'all';
 let currentQuery = '';
+let currentPage = 1;
+let totalMatches = 0;
+let currentResults = [];
 let searchTimer = null;
 
 const $ = id => document.getElementById(id);
 
-// ============================================================
-// CARGA INICIAL — descarga el .db.gz, lo descomprime, lo abre
-// ============================================================
 async function init() {
   try {
-    // 1. Inicializar sql.js (WebAssembly)
     $('progressText').textContent = 'Inicializando motor SQLite...';
     const SQL = await initSqlJs({
       locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${f}`
     });
 
-    // 2. Descargar el .db.gz con seguimiento de progreso
     $('progressText').textContent = 'Descargando base de datos...';
     const response = await fetch(DB_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -421,51 +401,38 @@ async function init() {
       }
     }
 
-    // 3. Concatenar chunks
     const compressed = new Uint8Array(received);
     let pos = 0;
     for (const c of chunks) { compressed.set(c, pos); pos += c.length; }
 
-    // 4. Descomprimir con DecompressionStream (nativo del navegador)
     $('progressText').textContent = 'Descomprimiendo...';
     const decompressed = await new Response(
       new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))
     ).arrayBuffer();
 
-    // 5. Abrir la base de datos en memoria
     $('progressText').textContent = 'Abriendo base de datos...';
     db = new SQL.Database(new Uint8Array(decompressed));
 
-    // 6. Verificar conteo real
     const count = db.exec("SELECT COUNT(*) FROM items")[0].values[0][0];
     $('liveBadge').textContent = count.toLocaleString('es-PE') + ' ítems';
-
     console.log(`✅ DB cargada: ${count.toLocaleString()} ítems`);
 
-    if (count === 0) {
-      throw new Error('La base de datos cargó pero está vacía');
-    }
+    if (count === 0) throw new Error('Base de datos vacía');
 
-    // 7. Listo: ocultar loader y habilitar búsqueda
     $('loader').classList.add('hidden');
     $('searchInput').disabled = false;
     $('searchInput').focus();
   } catch (err) {
-    $('progressText').innerHTML = `❌ Error: ${err.message}<br><br>Verifica que el archivo <code>catalogo-siga.db.gz</code> esté en el mismo directorio que este HTML.`;
+    $('progressText').innerHTML = `❌ Error: ${err.message}`;
     console.error(err);
   }
 }
 
-// ============================================================
-// BÚSQUEDA
-// ============================================================
 function isCode(q) {
-  // Detecta si parece un código: solo dígitos y puntos
   return /^[\d.]+$/.test(q.trim()) && q.replace(/\D/g, '').length >= 4;
 }
 
 function formatCode(q) {
-  // Convierte "140600530230" o "14.06.0053.0230" a formato canónico
   const digits = q.replace(/\D/g, '');
   if (digits.length === 12) {
     return `${digits.slice(0,2)}.${digits.slice(2,4)}.${digits.slice(4,8)}.${digits.slice(8,12)}`;
@@ -474,47 +441,57 @@ function formatCode(q) {
 }
 
 function normalizar(s) {
-  // Mismo proceso que hicimos en Python: quita tildes y pasa a minúsculas
-  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
-function search(query, filter) {
-  if (!db) return { rows: [], ms: 0 };
+function buildSearchSql(query, filter) {
   const q = query.trim();
-  if (!q) return { rows: [], ms: 0 };
+  let where = '';
+  let params = [];
 
+  if (isCode(q)) {
+    where = "codigo LIKE ? || '%'";
+    params.push(formatCode(q));
+  } else {
+    const words = normalizar(q).split(/\s+/).filter(w => w.length >= 2);
+    if (words.length === 0) return null;
+    where = words.map(() => "busqueda LIKE ?").join(" AND ");
+    params = words.map(w => `%${w}%`);
+  }
+
+  if (filter !== 'all') {
+    where += " AND tipo = ?";
+    params.push(filter);
+  }
+
+  return { where, params };
+}
+
+function countMatches(query, filter) {
+  const built = buildSearchSql(query, filter);
+  if (!built) return 0;
+  const stmt = db.prepare(`SELECT COUNT(*) as c FROM items WHERE ${built.where}`);
+  stmt.bind(built.params);
+  stmt.step();
+  const row = stmt.getAsObject();
+  stmt.free();
+  return row.c;
+}
+
+function fetchResults(query, filter, page = 1) {
+  if (!db) return { rows: [], ms: 0 };
   const t0 = performance.now();
-  let stmt, rows = [];
+  let rows = [];
 
   try {
-    if (isCode(q)) {
-      // Búsqueda por código: usa el índice idx_codigo
-      const code = formatCode(q);
-      const sql = filter === 'all'
-        ? "SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE codigo LIKE ? || '%' LIMIT 100"
-        : "SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE codigo LIKE ? || '%' AND tipo = ? LIMIT 100";
-      stmt = db.prepare(sql);
-      filter === 'all' ? stmt.bind([code]) : stmt.bind([code, filter]);
-    } else {
-      // Búsqueda por texto: separar palabras, todas deben aparecer (AND)
-      const words = normalizar(q).split(/\s+/).filter(w => w.length >= 2);
-      if (words.length === 0) return { rows: [], ms: 0 };
+    const built = buildSearchSql(query, filter);
+    if (!built) return { rows: [], ms: 0 };
 
-      // Construir cláusulas LIKE para cada palabra
-      const conditions = words.map(() => "busqueda LIKE ?").join(" AND ");
-      const params = words.map(w => `%${w}%`);
-
-      let sql = `SELECT codigo, nombre_item, nombre_familia, tipo, unidad, fecha FROM items WHERE ${conditions}`;
-      if (filter !== 'all') {
-        sql += " AND tipo = ?";
-        params.push(filter);
-      }
-      sql += " LIMIT 100";
-
-      stmt = db.prepare(sql);
-      stmt.bind(params);
-    }
-
+    const offset = (page - 1) * PAGE_SIZE;
+    const sql = `SELECT codigo, nombre_item, nombre_familia, nombre_clase, nombre_grupo, tipo, unidad, fecha
+                 FROM items WHERE ${built.where} LIMIT ? OFFSET ?`;
+    const stmt = db.prepare(sql);
+    stmt.bind([...built.params, PAGE_SIZE, offset]);
     while (stmt.step()) rows.push(stmt.getAsObject());
     stmt.free();
   } catch (e) {
@@ -525,10 +502,16 @@ function search(query, filter) {
   return { rows, ms: performance.now() - t0 };
 }
 
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
 function highlight(text, query) {
-  if (!query || isCode(query)) return text;
+  if (!query || isCode(query)) return escapeHtml(text);
   const words = query.trim().split(/\s+/).filter(w => w.length >= 2);
-  let result = text;
+  let result = escapeHtml(text);
   for (const w of words) {
     const re = new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     result = result.replace(re, '<mark>$1</mark>');
@@ -536,63 +519,265 @@ function highlight(text, query) {
   return result;
 }
 
+function rowHtml(r) {
+  const tipoLabel = r.tipo === 'B' ? 'BIEN' : r.tipo === 'S' ? 'SERV' : 'OBRA';
+  return `
+    <div class="result-row" data-codigo="${r.codigo}">
+      <div>
+        <button class="code-btn" data-action="copy" data-code="${r.codigo}">${r.codigo}</button>
+      </div>
+      <div class="name">
+        ${highlight(r.nombre_item, currentQuery)}
+        <span class="family">${escapeHtml(r.nombre_familia)}</span>
+      </div>
+      <div><span class="type-tag type-${r.tipo}">${tipoLabel}</span></div>
+      <div class="unit">${escapeHtml(r.unidad)}</div>
+      <div class="date">${escapeHtml(r.fecha)}</div>
+    </div>`;
+}
+
 function render() {
   const list = $('resultsList');
+  $('loadMoreContainer').innerHTML = '';
 
   if (!currentQuery.trim()) {
     list.innerHTML = `<div class="welcome"><div class="empty-icon">⌕</div><div>Escribe algo arriba para empezar a buscar</div></div>`;
     $('perfDisplay').innerHTML = '';
+    $('btnExportCsv').disabled = true;
+    $('btnExportXlsx').disabled = true;
     return;
   }
 
-  const result = search(currentQuery, currentFilter);
-  const { rows, ms, error } = result;
+  const t0 = performance.now();
+  totalMatches = countMatches(currentQuery, currentFilter);
+  const result = fetchResults(currentQuery, currentFilter, 1);
+  const totalMs = performance.now() - t0;
 
-  if (error) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">⚠</div><div>Error en la búsqueda:<br><code style="color:var(--red);font-size:12px">${error}</code></div></div>`;
+  if (result.error) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">⚠</div><div>Error: <code style="color:var(--red)">${result.error}</code></div></div>`;
     $('perfDisplay').innerHTML = '';
     return;
   }
 
-  $('perfDisplay').innerHTML = `${rows.length} resultados en <strong>${ms.toFixed(1)}ms</strong>`;
+  currentResults = result.rows;
+  currentPage = 1;
 
-  if (rows.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">○</div><div>Sin resultados para "<strong>${currentQuery}</strong>"</div></div>`;
+  $('perfDisplay').innerHTML = `<strong>${totalMatches.toLocaleString('es-PE')}</strong> resultados · ${totalMs.toFixed(0)}ms`;
+  $('btnExportCsv').disabled = totalMatches === 0;
+  $('btnExportXlsx').disabled = totalMatches === 0;
+
+  if (currentResults.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">○</div><div>Sin resultados para "<strong>${escapeHtml(currentQuery)}</strong>"</div></div>`;
     return;
   }
 
-  list.innerHTML = rows.map(r => {
-    const tipoLabel = r.tipo === 'B' ? 'BIEN' : r.tipo === 'S' ? 'SERV' : 'OBRA';
-    return `
-      <div class="result-row">
-        <div class="code" onclick="copyCode('${r.codigo}')">${r.codigo}</div>
-        <div class="name">
-          ${highlight(r.nombre_item, currentQuery)}
-          <span class="family">${r.nombre_familia}</span>
+  list.innerHTML = currentResults.map(rowHtml).join('');
+  renderLoadMore();
+}
+
+function renderLoadMore() {
+  const loadMore = $('loadMoreContainer');
+  const loaded = currentResults.length;
+  if (loaded >= totalMatches || loaded >= MAX_RESULTS) {
+    if (loaded < totalMatches) {
+      loadMore.innerHTML = `<div class="load-more"><div class="info">Mostrando ${loaded.toLocaleString('es-PE')} de ${totalMatches.toLocaleString('es-PE')} · Refina la búsqueda o exporta a Excel para verlos todos</div></div>`;
+    }
+    return;
+  }
+  loadMore.innerHTML = `
+    <div class="load-more">
+      <button id="btnLoadMore">Cargar más resultados</button>
+      <div class="info">Mostrando ${loaded.toLocaleString('es-PE')} de ${totalMatches.toLocaleString('es-PE')}</div>
+    </div>`;
+  $('btnLoadMore').addEventListener('click', loadMore);
+}
+
+function loadMore() {
+  currentPage++;
+  const result = fetchResults(currentQuery, currentFilter, currentPage);
+  if (result.rows.length > 0) {
+    currentResults = currentResults.concat(result.rows);
+    $('resultsList').insertAdjacentHTML('beforeend', result.rows.map(rowHtml).join(''));
+    renderLoadMore();
+  }
+}
+
+function showDetail(codigo) {
+  const stmt = db.prepare("SELECT * FROM items WHERE codigo = ?");
+  stmt.bind([codigo]);
+  stmt.step();
+  const r = stmt.getAsObject();
+  stmt.free();
+
+  const tipoLabel = r.tipo === 'B' ? 'BIEN' : r.tipo === 'S' ? 'SERVICIO' : 'OBRA';
+  const parts = r.codigo.split('.');
+  const [grupo, clase, familia, item] = parts;
+
+  $('detailCode').textContent = r.codigo;
+  $('detailCode').onclick = () => copyCode(r.codigo);
+  $('detailTitle').textContent = r.nombre_item;
+  $('detailTags').innerHTML = `
+    <span class="type-tag type-${r.tipo}">${tipoLabel}</span>
+    <span class="type-tag" style="background:var(--surface-2);color:var(--text-dim)">${escapeHtml(r.unidad)}</span>
+  `;
+
+  $('detailBody').innerHTML = `
+    <div class="detail-field">
+      <div class="detail-label">Jerarquía del catálogo</div>
+      <div class="detail-hierarchy">
+        <div class="hierarchy-item">
+          <span><span class="code-part">${grupo}</span> Grupo</span>
+          <span class="name-part">${escapeHtml(r.nombre_grupo)}</span>
         </div>
-        <div><span class="type-tag type-${r.tipo}">${tipoLabel}</span></div>
-        <div class="unit">${r.unidad}</div>
-        <div class="date">${r.fecha}</div>
-      </div>`;
-  }).join('');
+        <div class="hierarchy-item">
+          <span><span class="code-part">${clase}</span> Clase</span>
+          <span class="name-part">${escapeHtml(r.nombre_clase)}</span>
+        </div>
+        <div class="hierarchy-item">
+          <span><span class="code-part">${familia}</span> Familia</span>
+          <span class="name-part">${escapeHtml(r.nombre_familia)}</span>
+        </div>
+        <div class="hierarchy-item">
+          <span><span class="code-part">${item}</span> Ítem</span>
+          <span class="name-part">${escapeHtml(r.nombre_item)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-field">
+      <div class="detail-label">Unidad de medida</div>
+      <div class="detail-value">${escapeHtml(r.unidad)}</div>
+    </div>
+
+    <div class="detail-field">
+      <div class="detail-label">Fecha de alta</div>
+      <div class="detail-value">${escapeHtml(r.fecha)}</div>
+    </div>
+
+    <div class="detail-field">
+      <div class="detail-label">Código sin puntos</div>
+      <div class="detail-value mono">${r.codigo.replace(/\./g, '')}</div>
+    </div>
+
+    <div class="detail-field">
+      <div class="detail-label">Acciones</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-export" id="detailCopyCode">📋 Copiar código</button>
+        <button class="btn-export" id="detailCopyName">📋 Copiar nombre</button>
+      </div>
+    </div>
+  `;
+
+  $('detailCopyCode').addEventListener('click', () => copyCode(r.codigo));
+  $('detailCopyName').addEventListener('click', () => copyText(r.nombre_item));
+
+  $('detailPanel').classList.add('show');
+  $('detailOverlay').classList.add('show');
+}
+
+function closeDetail() {
+  $('detailPanel').classList.remove('show');
+  $('detailOverlay').classList.remove('show');
+}
+
+function fetchAllForExport() {
+  const built = buildSearchSql(currentQuery, currentFilter);
+  if (!built) return [];
+  const sql = `SELECT codigo, nombre_item, tipo, unidad, nombre_familia, nombre_clase, nombre_grupo, fecha
+               FROM items WHERE ${built.where} LIMIT ?`;
+  const stmt = db.prepare(sql);
+  stmt.bind([...built.params, MAX_RESULTS]);
+  const rows = [];
+  while (stmt.step()) rows.push(stmt.getAsObject());
+  stmt.free();
+  return rows;
+}
+
+function exportCsv() {
+  const rows = fetchAllForExport();
+  if (rows.length === 0) return;
+
+  const headers = ['Codigo', 'Nombre', 'Tipo', 'Unidad', 'Familia', 'Clase', 'Grupo', 'Fecha'];
+  const csvRows = [headers.join(',')];
+
+  for (const r of rows) {
+    const tipoLabel = r.tipo === 'B' ? 'Bien' : r.tipo === 'S' ? 'Servicio' : 'Obra';
+    const csvRow = [
+      r.codigo, r.nombre_item, tipoLabel, r.unidad,
+      r.nombre_familia, r.nombre_clase, r.nombre_grupo, r.fecha
+    ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
+    csvRows.push(csvRow);
+  }
+
+  const blob = new Blob(['\uFEFF' + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  downloadBlob(blob, `catalogo-siga-${nowStamp()}.csv`);
+  showToast(`Descargados ${rows.length} resultados en CSV`);
+}
+
+function exportXlsx() {
+  const rows = fetchAllForExport();
+  if (rows.length === 0) return;
+
+  const data = rows.map(r => ({
+    'Código': r.codigo,
+    'Nombre': r.nombre_item,
+    'Tipo': r.tipo === 'B' ? 'Bien' : r.tipo === 'S' ? 'Servicio' : 'Obra',
+    'Unidad': r.unidad,
+    'Familia': r.nombre_familia,
+    'Clase': r.nombre_clase,
+    'Grupo': r.nombre_grupo,
+    'Fecha': r.fecha
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws['!cols'] = [
+    {wch: 18}, {wch: 60}, {wch: 10}, {wch: 12},
+    {wch: 30}, {wch: 30}, {wch: 30}, {wch: 12}
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Catálogo SIGA');
+  XLSX.writeFile(wb, `catalogo-siga-${nowStamp()}.xlsx`);
+  showToast(`Descargados ${rows.length} resultados en Excel`);
+}
+
+function nowStamp() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function copyCode(code) {
   navigator.clipboard.writeText(code);
-  const t = $('toast');
-  t.textContent = `Copiado: ${code}`;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1500);
+  showToast(`Copiado: ${code}`);
 }
 
-// ============================================================
-// EVENTOS
-// ============================================================
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+  showToast('Copiado al portapapeles');
+}
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// Eventos
 $('searchInput').addEventListener('input', e => {
   currentQuery = e.target.value;
   clearTimeout(searchTimer);
-  // Pequeño debounce de 80ms para no buscar en cada letra
-  searchTimer = setTimeout(render, 80);
+  searchTimer = setTimeout(render, 100);
 });
 
 document.querySelectorAll('.filter-chip').forEach(chip => {
@@ -604,20 +789,40 @@ document.querySelectorAll('.filter-chip').forEach(chip => {
   });
 });
 
+$('btnExportCsv').addEventListener('click', exportCsv);
+$('btnExportXlsx').addEventListener('click', exportXlsx);
+$('detailClose').addEventListener('click', closeDetail);
+$('detailOverlay').addEventListener('click', closeDetail);
+
+// Click en filas: mostrar detalle. Click en botón "código": copiar (no abre detalle).
+$('resultsList').addEventListener('click', e => {
+  const copyBtn = e.target.closest('[data-action="copy"]');
+  if (copyBtn) {
+    e.stopPropagation();
+    copyCode(copyBtn.dataset.code);
+    return;
+  }
+  const row = e.target.closest('.result-row');
+  if (row) showDetail(row.dataset.codigo);
+});
+
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
     e.preventDefault();
     $('searchInput').focus();
     $('searchInput').select();
   }
-  if (e.key === 'Escape' && document.activeElement === $('searchInput')) {
-    $('searchInput').value = '';
-    currentQuery = '';
-    render();
+  if (e.key === 'Escape') {
+    if ($('detailPanel').classList.contains('show')) {
+      closeDetail();
+    } else if (document.activeElement === $('searchInput')) {
+      $('searchInput').value = '';
+      currentQuery = '';
+      render();
+    }
   }
 });
 
-// Arrancar
 init();
 </script>
 </body>
