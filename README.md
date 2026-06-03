@@ -153,3 +153,21 @@ Para uso oficial, formal o trámites administrativos, contrastar siempre con la 
 - **No incluye clasificadores presupuestales ni cuentas contables:** esos datos no están en el dataset abierto del MEF; habría que conseguirlos por otra vía.
 - **Tope de exportación:** 5,000 resultados por exportación. Para más, refinar la búsqueda.
 - **Resultados máximos en pantalla:** 5,000 para no colgar el navegador con búsquedas muy genéricas.
+
+## Accesibilidad
+
+El buscador está diseñado para ser usable con teclado y lectores de pantalla:
+
+- Navegación completa con teclado (`↑` `↓` `Enter` `Espacio`)
+- Foco visible en la fila seleccionada
+- Anuncios automáticos del número de resultados mediante `aria-live`
+- Filtros con estado `aria-pressed` correcto
+- Estructura semántica (`<ul>` + `<li>`) para lectores de pantalla
+- Focus trap en el panel de detalle
+
+### Pruebas realizadas
+
+- Navegación 100% con teclado
+- Probado con NVDA + Firefox
+- Probado con VoiceOver + Safari
+- Contraste de color verificado (WCAG AA)
