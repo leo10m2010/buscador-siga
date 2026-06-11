@@ -168,3 +168,7 @@ function fuzzySearch(db, query, filter, limit = 50) {
 
   return { rows: topResults, ms: performance.now() - t0 };
 }
+
+if (typeof module !== 'undefined') {
+  module.exports = { normalizar, isCode, formatCode, buildSearchSql };
+}

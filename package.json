@@ -8,6 +8,9 @@
     "test": "vitest run",
     "dev": "python -m http.server 8000"
   },
+  "dependencies": {
+    "sql.js": "^1.10.3"
+  },
   "devDependencies": {
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",

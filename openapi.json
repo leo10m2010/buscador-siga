@@ -1,0 +1,163 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Catálogo SIGA MEF",
+    "description": "API pública de solo lectura para buscar en el Catálogo de Bienes, Servicios y Obras del SIGA MEF (Perú). Datos oficiales del Portal de Datos Abiertos del MEF, actualizados diariamente. Sin autenticación, CORS abierto.",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "/" }],
+  "paths": {
+    "/api/search": {
+      "get": {
+        "operationId": "searchCatalog",
+        "summary": "Busca ítems por texto libre o código SIGA",
+        "description": "Búsqueda por texto (insensible a tildes y mayúsculas, varias palabras se combinan con AND) o por código SIGA con o sin puntos (prefijos permitidos).",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Texto libre (ej. 'computadora') o código SIGA (ej. '14.06.0053.0230' o '140600530230').",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filtro por tipo: all (todos), B (bienes), S (servicios), O (obras).",
+            "schema": { "type": "string", "enum": ["all", "B", "S", "O"], "default": "all" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "maximum": 500, "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados de la búsqueda",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "query": { "type": "string" },
+                    "type": { "type": "string" },
+                    "page": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "total": { "type": "integer", "description": "Total de coincidencias" },
+                    "count": { "type": "integer", "description": "Resultados en esta página" },
+                    "ms": { "type": "integer" },
+                    "updatedAt": { "type": "string", "format": "date-time" },
+                    "rows": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Item" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/item": {
+      "get": {
+        "operationId": "getItem",
+        "summary": "Devuelve un ítem exacto por código SIGA",
+        "parameters": [
+          {
+            "name": "codigo",
+            "in": "query",
+            "required": true,
+            "description": "Código SIGA con o sin puntos (ej. '14.06.0053.0230' o '140600530230').",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ítem encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "updatedAt": { "type": "string", "format": "date-time" },
+                    "item": { "$ref": "#/components/schemas/Item" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/meta": {
+      "get": {
+        "operationId": "getMeta",
+        "summary": "Metadatos del catálogo",
+        "description": "Total de ítems, conteo por tipo, fecha de la última actualización y fuente oficial de los datos.",
+        "responses": {
+          "200": {
+            "description": "Metadatos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalItems": { "type": "integer" },
+                    "byType": {
+                      "type": "object",
+                      "additionalProperties": { "type": "integer" }
+                    },
+                    "source": { "type": "string" },
+                    "updatedAt": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Item": {
+        "type": "object",
+        "properties": {
+          "codigo": { "type": "string", "example": "14.06.0053.0230" },
+          "nombre_item": { "type": "string", "example": "CPU 2.60 GHZ 16 GB 1 TB" },
+          "nombre_familia": { "type": "string", "example": "COMPUTADORAS PERSONALES" },
+          "nombre_clase": { "type": "string", "example": "EQUIPOS DE PROCESAMIENTO" },
+          "nombre_grupo": { "type": "string", "example": "BIENES INFORMÁTICOS" },
+          "tipo": { "type": "string", "enum": ["B", "S", "O"], "description": "B = bien, S = servicio, O = obra" },
+          "unidad": { "type": "string", "example": "UNIDAD" },
+          "fecha": { "type": "string", "example": "2019-03-15", "description": "Fecha de alta del ítem" }
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": { "error": { "type": "string" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

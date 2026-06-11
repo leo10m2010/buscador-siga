@@ -1,0 +1,24 @@
+{
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "{catalogo-siga.db.gz,node_modules/sql.js/dist/sql-wasm.wasm}",
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/catalogo-siga.db.gz",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/gzip"
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buscador SIGA MEF</title>
+<meta name="description" content="Buscador rápido y no oficial del Catálogo de Bienes, Servicios y Obras del SIGA MEF (Perú). Más de 645,000 ítems actualizados diariamente desde el Portal de Datos Abiertos del MEF. API JSON pública en /api/search.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Catálogo de Bienes, Servicios y Obras del SIGA MEF",
+  "description": "Catálogo oficial del Sistema Integrado de Gestión Administrativa (SIGA) del Ministerio de Economía y Finanzas del Perú, con más de 645,000 ítems. Actualizado diariamente desde el Portal de Datos Abiertos del MEF. Consultable vía API JSON pública (/api/search, /api/item, /api/meta).",
+  "url": "https://datosabiertos.mef.gob.pe/",
+  "isAccessibleForFree": true,
+  "creator": {
+    "@type": "Organization",
+    "name": "Ministerio de Economía y Finanzas del Perú"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "/api/search?q=computadora"
+    },
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "https://fs.datosabiertos.mef.gob.pe/datastorefiles/Catalogo-SIGA_MEF.csv"
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -114,7 +141,6 @@
   </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="search.js"></script>
   <script src="db-cache.js"></script>
   <script src="app.js"></script>

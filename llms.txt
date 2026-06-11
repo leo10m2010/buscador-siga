@@ -1,0 +1,42 @@
+# Buscador SIGA MEF
+
+> Buscador no oficial del Catálogo de Bienes, Servicios y Obras del SIGA MEF
+> (Sistema Integrado de Gestión Administrativa, Ministerio de Economía y
+> Finanzas del Perú). Contiene ~645,000 ítems con código, nombre, jerarquía
+> (grupo, clase, familia), tipo, unidad de medida y fecha de alta. Los datos
+> provienen del Portal de Datos Abiertos del MEF y se actualizan
+> automáticamente todos los días.
+
+## API JSON
+
+API pública de solo lectura, sin autenticación, con CORS abierto. Todas las
+respuestas incluyen `updatedAt` con la fecha de la última actualización del
+catálogo.
+
+- [GET /api/search](/api/search?q=computadora&type=B&limit=10): busca ítems.
+  Parámetros: `q` (requerido: texto libre o código SIGA con o sin puntos),
+  `type` (opcional: `all`, `B` bienes, `S` servicios, `O` obras),
+  `page` (opcional, por defecto 1), `limit` (opcional, por defecto 50, máximo 500).
+  La búsqueda por texto es insensible a tildes y mayúsculas; varias palabras
+  se combinan con AND.
+- [GET /api/item](/api/item?codigo=14.06.0053.0230): devuelve un ítem exacto
+  por código. Parámetro: `codigo` (con o sin puntos, ej. `14.06.0053.0230`
+  o `140600530230`).
+- [GET /api/meta](/api/meta): metadatos del catálogo (total de ítems, conteo
+  por tipo, fecha de actualización, fuente oficial).
+
+## Especificación
+
+- [OpenAPI 3.0](/openapi.json): especificación completa de la API.
+
+## Fuente de datos
+
+- [Portal de Datos Abiertos del MEF](https://datosabiertos.mef.gob.pe/):
+  CSV oficial en https://fs.datosabiertos.mef.gob.pe/datastorefiles/Catalogo-SIGA_MEF.csv
+
+## Notas
+
+- Herramienta no oficial, sin afiliación con el MEF. Para trámites
+  administrativos contrastar siempre con la fuente oficial (mef.gob.pe).
+- El catálogo se regenera diariamente a las 11:00 (hora de Lima) vía
+  GitHub Actions y el sitio se redespliega automáticamente.

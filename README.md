@@ -2,7 +2,7 @@
 
 Buscador rápido y no oficial del **Catálogo de Bienes, Servicios y Obras del SIGA MEF** (Sistema Integrado de Gestión Administrativa del Ministerio de Economía y Finanzas del Perú).
 
-Los datos provienen del [Portal de Datos Abiertos del MEF](https://datosabiertos.mef.gob.pe/) y se actualizan automáticamente todos los días.
+Los datos provienen del [Portal de Datos Abiertos del MEF](https://datosabiertos.mef.gob.pe/) y se actualizan automáticamente todos los días. El sitio puede publicarse en Vercel y exponer una API JSON para agentes de IA, automatizaciones o integraciones externas.
 
 ## ¿Qué hace?
 
@@ -18,13 +18,13 @@ Permite buscar entre los **645,150 ítems** del catálogo oficial del SIGA en mi
 
 ## ¿Cómo funciona?
 
-La aplicación es **100% estática**, no requiere servidor. Toda la lógica corre en el navegador del usuario.
+La aplicación web sigue funcionando como frontend estático: toda la búsqueda visual corre en el navegador del usuario. En Vercel, además, la carpeta `api/` expone Functions serverless que consultan la misma base SQLite comprimida y devuelven JSON.
 
 ### Arquitectura
 
 ```
 ┌─────────────────────────────────────────────┐
-│  GitHub Pages (hosting estático gratuito)   │
+│  Vercel (hosting estático + API serverless) │
 │                                              │
 │  ┌──────────────┐    ┌────────────────────┐ │
 │  │  index.html  │    │ catalogo-siga.db.gz│ │
@@ -55,13 +55,77 @@ El catálogo tiene 645,150 filas (152 MB en CSV crudo). Hacer scroll lineal sobr
 
 SQLite con índice en columna normalizada gana por 280× en velocidad. La descarga inicial son 66 MB (gzip), después el navegador cachea todo y la app funciona casi como nativa.
 
+## API en Vercel
+
+La API usa la misma `catalogo-siga.db.gz` versionada en el repo, por lo que queda actualizada cada vez que GitHub Actions regenera la DB y Vercel redespliega el commit.
+
+### `GET /api/search`
+
+Busca por texto o por código.
+
+Parámetros:
+
+- `q` requerido: texto o código SIGA, con o sin puntos.
+- `type` opcional: `all`, `B`, `S` u `O`.
+- `page` opcional: página positiva, por defecto `1`.
+- `limit` opcional: resultados por página, por defecto `50`, máximo `500`.
+
+Ejemplo:
+
+```bash
+curl "https://TU-DOMINIO.vercel.app/api/search?q=computadora&type=B&limit=10"
+```
+
+Respuesta resumida:
+
+```json
+{
+  "query": "computadora",
+  "type": "B",
+  "page": 1,
+  "limit": 10,
+  "total": 1531,
+  "count": 10,
+  "updatedAt": "2026-06-08T00:00:00.000Z",
+  "rows": []
+}
+```
+
+### `GET /api/item`
+
+Devuelve un ítem exacto por código.
+
+```bash
+curl "https://TU-DOMINIO.vercel.app/api/item?codigo=13.30.0037.0003"
+```
+
+### `GET /api/meta`
+
+Devuelve metadatos de la base: total de ítems, fecha del archivo, fuente oficial y ejemplos de endpoints.
+
+```bash
+curl "https://TU-DOMINIO.vercel.app/api/meta"
+```
+
+### Descubrimiento para IAs y agentes
+
+Para que asistentes de IA y agentes encuentren y usen la API automáticamente:
+
+- **`/llms.txt`** — descripción del sitio y de la API en el formato estándar que leen los agentes de IA.
+- **`/openapi.json`** — especificación OpenAPI 3.0 de los tres endpoints, consumible por herramientas y agentes.
+- **`/robots.txt`** — permite el rastreo a todos los bots.
+- **`/api/meta`** — incluye los punteros a `openapi.json` y `llms.txt` en el campo `docs`.
+- Todas las respuestas de la API incluyen `updatedAt`, así el agente sabe qué tan fresco es el dato.
+
 ## Estructura del proyecto
 
 ```
 buscador-siga/
 ├── index.html              Frontend completo (UI + lógica de búsqueda)
+├── api/                    Functions serverless para Vercel
 ├── catalogo-siga.db.gz     Base de datos SQLite comprimida (auto-actualizada)
 ├── construir_db.py         Script que genera el .db desde el CSV del MEF
+├── vercel.json             Configuración de Vercel para API + DB
 ├── .github/
 │   └── workflows/
 │       └── update-catalogo.yml   Workflow que corre diario y actualiza la DB
@@ -75,7 +139,7 @@ Un GitHub Action corre todos los días a las **11:00 AM hora Lima** y:
 1. Descarga el CSV oficial desde `datosabiertos.mef.gob.pe`
 2. Regenera `catalogo-siga.db.gz` con el script `construir_db.py`
 3. Hace commit del archivo nuevo (solo si hubo cambios)
-4. GitHub Pages se redespliega solo
+4. Vercel redespliega el sitio y la API desde el nuevo commit
 
 No requiere mantenimiento. El sitio queda siempre al día.
 
@@ -85,7 +149,7 @@ No requiere mantenimiento. El sitio queda siempre al día.
 - **[SheetJS](https://sheetjs.com/)** — Generación de archivos Excel (.xlsx)
 - **[Lucide](https://lucide.dev/)** — Iconos SVG
 - **HTML/CSS/JS vanilla** — Sin frameworks
-- **GitHub Pages** — Hosting estático
+- **Vercel** — Hosting estático + Functions serverless para la API
 - **GitHub Actions** — Pipeline de actualización
 
 ## Datos

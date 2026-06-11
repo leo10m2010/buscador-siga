@@ -32,8 +32,48 @@ function handleError(err, context = '') {
   showToast(msg.length > 60 ? msg.substring(0, 57) + '...' : msg);
 }
 
+// Versión remota de la DB: el ETag del archivo en Vercel solo cambia cuando
+// los datos realmente cambian, así evitamos re-descargar 66 MB sin necesidad.
+async function getRemoteVersion() {
+  try {
+    const head = await fetch(DB_URL, { method: 'HEAD', cache: 'no-store' });
+    const etag = head.headers.get('etag');
+    if (head.ok && etag) return etag;
+  } catch (e) {
+    console.warn('[Buscador SIGA] HEAD falló, usando fecha como versión:', e);
+  }
+  // Sin ETag (ej. servidor local): caer a la fecha del día, como antes.
+  return new Date().toISOString().split('T')[0];
+}
+
+function updateFreshnessBadge(dateStr) {
+  const badge = $('lastUpdateBadge');
+  if (!badge || !dateStr) return;
+  // 'YYYY-MM-DD' se parsea como UTC; anclar a medianoche local para no
+  // mostrar "ayer" el mismo día en zonas horarias negativas como Lima.
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(dateStr) ? new Date(dateStr + 'T00:00:00') : new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return;
+
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (d.toDateString() === today.toDateString()) {
+    badge.innerHTML = '<span class="live-dot"></span>Actualizado hoy';
+    badge.classList.add('live');
+  } else if (d.toDateString() === yesterday.toDateString()) {
+    badge.innerHTML = 'Actualizado ayer';
+    badge.classList.remove('live');
+  } else {
+    const day = d.getDate();
+    const month = d.toLocaleDateString('es-PE', { month: 'short' });
+    badge.innerHTML = `Actualizado el ${day} ${month}`;
+    badge.classList.remove('live');
+  }
+}
+
 async function initializeDatabase(SQL) {
-  const remoteVersion = new Date().toISOString().split('T')[0];
+  const remoteTag = await getRemoteVersion();
   let cached = null;
 
   try {
@@ -42,36 +82,14 @@ async function initializeDatabase(SQL) {
     console.warn('[Buscador SIGA] Error leyendo caché IndexedDB:', e);
   }
 
-  // Caso 1: Caché válida del día actual
-  if (cached && cached.data && cached.version === remoteVersion) {
+  // La versión se guarda como "etag|fecha-de-descarga"
+  const [cachedTag, cachedDate] = String((cached && cached.version) || '').split('|');
+
+  // Caso 1: Caché vigente (la DB del servidor no cambió)
+  if (cached && cached.data && cachedTag === remoteTag) {
     $('progressText').textContent = 'Cargando desde caché local...';
     const database = new SQL.Database(new Uint8Array(cached.data));
-
-      const badge = $('lastUpdateBadge');
-      if (badge && cached.version) {
-        const d = new Date(cached.version);
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        let text = '';
-        if (d.toDateString() === today.toDateString()) {
-          text = 'Actualizado hoy';
-          badge.innerHTML = `<span class="live-dot"></span>${text}`;
-          badge.classList.add('live');
-        } else if (d.toDateString() === yesterday.toDateString()) {
-          text = 'Actualizado ayer';
-          badge.innerHTML = text;
-          badge.classList.remove('live');
-        } else {
-          const day = d.getDate();
-          const month = d.toLocaleDateString('es-PE', { month: 'short' });
-          text = `Actualizado el ${day} ${month}`;
-          badge.innerHTML = text;
-          badge.classList.remove('live');
-        }
-      }
-
+    updateFreshnessBadge(cachedDate || cachedTag);
     console.log('[Buscador SIGA] DB cargada desde IndexedDB (versión actual)');
     return { database, version: cached.version };
   }
@@ -119,9 +137,12 @@ async function initializeDatabase(SQL) {
   const chunks = [];
   let received = 0;
 
-  while (true) {
-    const { done, value } = await reader.read();
+  let done = false;
+  while (!done) {
+    const chunk = await reader.read();
+    done = chunk.done;
     if (done) break;
+    const { value } = chunk;
     chunks.push(value);
     received += value.length;
     if (total) {
@@ -144,37 +165,15 @@ async function initializeDatabase(SQL) {
     new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))
   ).arrayBuffer();
 
-  await window.saveDatabaseToIndexedDB(decompressed, remoteVersion);
+  const downloadDate = new Date().toISOString().split('T')[0];
+  const versionToStore = `${remoteTag}|${downloadDate}`;
+  await window.saveDatabaseToIndexedDB(decompressed, versionToStore);
 
   $('progressText').textContent = 'Abriendo base de datos...';
   const database = new SQL.Database(new Uint8Array(decompressed));
+  updateFreshnessBadge(downloadDate);
 
-      const badge = $('lastUpdateBadge');
-      if (badge) {
-        const d = new Date(remoteVersion);
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        let text = '';
-        if (d.toDateString() === today.toDateString()) {
-          text = 'Actualizado hoy';
-          badge.innerHTML = `<span class="live-dot"></span>${text}`;
-          badge.classList.add('live');
-        } else if (d.toDateString() === yesterday.toDateString()) {
-          text = 'Actualizado ayer';
-          badge.innerHTML = text;
-          badge.classList.remove('live');
-        } else {
-          const day = d.getDate();
-          const month = d.toLocaleDateString('es-PE', { month: 'short' });
-          text = `Actualizado el ${day} ${month}`;
-          badge.innerHTML = text;
-          badge.classList.remove('live');
-        }
-      }
-
-  return { database, version: remoteVersion };
+  return { database, version: versionToStore };
 }
 
 async function init() {
@@ -184,7 +183,7 @@ async function init() {
       locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${f}`
     });
 
-    const { database } = await initializeDatabase(SQL);
+    const { database, version } = await initializeDatabase(SQL);
     db = database;
     isDbReady = true;
     window.isDbReady = true;
@@ -196,7 +195,7 @@ async function init() {
 
     if (isDebug) {
       console.log('%c[DEBUG] Modo debug activado', 'color:#ffd43b');
-      console.log('  - Versión:', remoteVersion || 'desconocida');
+      console.log('  - Versión:', version || 'desconocida');
       console.log('  - Ítems:', count);
       console.log('  - DB lista:', isDbReady);
     }
@@ -305,15 +304,15 @@ function render() {
 }
 
 function renderLoadMore() {
-  const loadMore = $('loadMoreContainer');
+  const container = $('loadMoreContainer');
   const loaded = currentResults.length;
   if (loaded >= totalMatches || loaded >= MAX_RESULTS) {
     if (loaded < totalMatches) {
-      loadMore.innerHTML = `<div class="load-more"><div class="info">Mostrando ${loaded.toLocaleString('es-PE')} de ${totalMatches.toLocaleString('es-PE')} · Refina la búsqueda o exporta a Excel para verlos todos</div></div>`;
+      container.innerHTML = `<div class="load-more"><div class="info">Mostrando ${loaded.toLocaleString('es-PE')} de ${totalMatches.toLocaleString('es-PE')} · Refina la búsqueda o exporta a Excel para verlos todos</div></div>`;
     }
     return;
   }
-  loadMore.innerHTML = `
+  container.innerHTML = `
     <div class="load-more">
       <button id="btnLoadMore">Cargar más resultados</button>
       <div class="info">Mostrando ${loaded.toLocaleString('es-PE')} de ${totalMatches.toLocaleString('es-PE')}</div>
@@ -477,7 +476,25 @@ function exportCsv() {
   btn.disabled = false;
 }
 
-function exportXlsx() {
+// SheetJS (~900 KB) se carga bajo demanda: solo si el usuario exporta a Excel.
+function loadXlsxLib() {
+  if (window.XLSX) return Promise.resolve();
+  if (!loadXlsxLib._promise) {
+    loadXlsxLib._promise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = resolve;
+      s.onerror = () => {
+        loadXlsxLib._promise = null;
+        reject(new Error('No se pudo cargar la librería de Excel. Revisa tu conexión.'));
+      };
+      document.head.appendChild(s);
+    });
+  }
+  return loadXlsxLib._promise;
+}
+
+async function exportXlsx() {
   try {
     ensureDbReady();
   } catch (e) {
@@ -489,6 +506,15 @@ function exportXlsx() {
   const original = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = 'Generando...';
+
+  try {
+    await loadXlsxLib();
+  } catch (e) {
+    handleError(e, 'exportXlsx');
+    btn.innerHTML = original;
+    btn.disabled = false;
+    return;
+  }
 
   const rows = fetchAllForExport();
   if (rows.length === 0) {
@@ -562,7 +588,9 @@ function saveToHistory(query) {
   let history = [];
   try {
     history = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
-  } catch {}
+  } catch {
+    // Ignorar historiales corruptos en localStorage.
+  }
 
   // Remove duplicates
   history = history.filter(h => h !== query);

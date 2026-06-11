@@ -35,7 +35,9 @@ jobs:
 
       - name: Comprimir base de datos
         run: |
-          gzip -9 -c catalogo-siga.db > catalogo-siga.db.gz
+          # -n: sin timestamp en el header gzip, asi el .gz solo cambia
+          # cuando los datos realmente cambian (evita commits y deploys inutiles)
+          gzip -9 -n -c catalogo-siga.db > catalogo-siga.db.gz
           echo "Tamano final: $(du -h catalogo-siga.db.gz | cut -f1)"
           rm catalogo-siga.db
           rm catalogo.csv
