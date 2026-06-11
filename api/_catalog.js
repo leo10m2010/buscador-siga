@@ -70,6 +70,17 @@ async function getDatabase() {
   if (!databasePromise) {
     databasePromise = (async () => {
       const stat = fs.statSync(DB_PATH);
+      // En Vercel el mtime de los archivos desplegados es un timestamp fijo
+      // sin relacion con los datos; la fecha real viene de db-version.json,
+      // que el workflow escribe cada vez que el catalogo cambia.
+      let updatedAt = stat.mtime.toISOString();
+      try {
+        const versionFile = path.join(process.cwd(), 'db-version.json');
+        const parsed = JSON.parse(fs.readFileSync(versionFile, 'utf8'));
+        if (parsed.updatedAt) updatedAt = parsed.updatedAt;
+      } catch {
+        // Sin db-version.json: queda el mtime como aproximacion.
+      }
       const SQL = await initSqlJs({
         locateFile: (file) => path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file),
       });
@@ -84,7 +95,7 @@ async function getDatabase() {
         source: 'https://fs.datosabiertos.mef.gob.pe/datastorefiles/Catalogo-SIGA_MEF.csv',
         databaseFile: 'catalogo-siga.db.gz',
         databaseBytes: stat.size,
-        updatedAt: stat.mtime.toISOString(),
+        updatedAt,
       };
 
       return db;

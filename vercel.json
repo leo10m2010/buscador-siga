@@ -1,8 +1,7 @@
 {
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "{catalogo-siga.db.gz,node_modules/sql.js/dist/sql-wasm.wasm}",
-      "memory": 1024,
+      "includeFiles": "{catalogo-siga.db.gz,db-version.json,node_modules/sql.js/dist/sql-wasm.wasm}",
       "maxDuration": 30
     }
   },
